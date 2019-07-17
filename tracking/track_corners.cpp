@@ -8,7 +8,7 @@
 #include <list>		// for std::list<>
 #include <vector>	// for std::vector<>
 #include "param.h"       //  contains values of needed parameters 
-#include "motionModel.h"
+#include "motion_model.h"
 
 #include <stdexcept>	// for std::runtime_error
 
@@ -201,8 +201,7 @@ int main(int argc, char **argv)
       param.probEnd,
       param.probDetect,
       param.stateVariance,
-      param.intensityThreshold,
-      param.maxDistance2);
+      param.maxDistance);
     mdl.append( (*cvmdl) );
 
 
@@ -374,25 +373,7 @@ Parameter read_param(const std::string &paramFile)
     while( std::getline(fp, buf) && buf.size() > 0 && buf[ 0 ] == ';' ) ;
     if( fp )
     {
-        param.intensityThreshold = atof( buf.c_str() );
-    }
-
-    while( std::getline(fp, buf) && buf.size() > 0 && buf[ 0 ] == ';' ) ;
-    if( fp )
-    {
-        param.maxDistance1 = atof( buf.c_str() );
-    }
-
-    while( std::getline(fp, buf) && buf.size() > 0 && buf[ 0 ] == ';' ) ;
-    if( fp )
-    {
-        param.maxDistance2 = atof( buf.c_str() );
-    }
-
-    while( std::getline(fp, buf) && buf.size() > 0 && buf[ 0 ] == ';' ) ;
-    if( fp )
-    {
-        param.maxDistance3 = atof( buf.c_str() );
+        param.maxDistance = atof( buf.c_str() );
     }
 
     while( std::getline(fp, buf) && buf.size() > 0 && buf[ 0 ] == ';' ) ;
@@ -453,10 +434,7 @@ Parameter read_param(const std::string &paramFile)
     std::cout << " maxGHypos = " << param.maxGHypos << std::endl;
     std::cout << " maxDepth = " << param.maxDepth << std::endl;
     std::cout << " minGHypoRatio = " << param.minGHypoRatio << std::endl;
-    std::cout << " intensityThreshold= " << param.intensityThreshold << std::endl;
-    std::cout << " maxDistance1= " << param.maxDistance1 << std::endl;
-    std::cout << " maxDistance2= " << param.maxDistance2 << std::endl;
-    std::cout << " maxDistance3= " << param.maxDistance3 << std::endl;
+    std::cout << " maxDistance= " << param.maxDistance << std::endl;
 
     return param;
 }
@@ -513,13 +491,7 @@ void writeCornerTrackFile(const std::string &name, const Parameter &param,
                     << "#\n"
                     << "#         MinGHypoRatio:  " << param.minGHypoRatio << "\n"
                     << "#\n"
-                    << "#         intensity Threshold:  " << param.intensityThreshold << "\n"
-                    << "#\n"
-                    << "#         Max Mahalinobus Dist1:  " << param.maxDistance1 << "\n"
-                    << "#\n"
-                    << "#         Max Mahalinobus Dist2:  " << param.maxDistance1 << "\n"
-                    << "#\n"
-                    << "#         Max Mahalinobus Dist3:  " << param.maxDistance1 << "\n"
+                    << "#         Max Mahalinobus Dist:  " << param.maxDistance << "\n"
                     << "#" << std::endl;
 
     /*
@@ -653,8 +625,6 @@ std::list<CORNERLIST> readCorners(const std::string &inputFileName, const std::s
          aCornerList++)
     {
         float x,y;
-        float i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15;
-        float i16,i17,i18,i19,i20,i21,i22,i23,i24,i25;
         size_t cornerID;
         std::stringstream stringRep;
         stringRep << basename << '.' << i++;
@@ -671,11 +641,10 @@ std::list<CORNERLIST> readCorners(const std::string &inputFileName, const std::s
         int j=0;
         while (std::getline(inDataFile, str) && j < ncorners[i-startFrame-1])
         {
-            sscanf(str.c_str(),"%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %zd",
-                   &x,&y,&i1,&i2,&i3,&i4,&i5,&i6,&i7,&i8, &i9, &i10, &i11, &i12, &i13, &i14,
-                   &i15,&i16, &i17, &i18, &i19, &i20, &i21, &i22, &i23, &i24, &i25, &cornerID );
+            sscanf(str.c_str(),"%f %f %zd",
+                   &x,&y, &cornerID );
 
-            aCornerList->list.push_back(CORNER(x,y, Texture_t(i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,i17,i18,i19,i20,i21,i22,i23,i24,i25),i-1,cornerID));
+            aCornerList->list.push_back(CORNER(x, y, i - 1, cornerID));
             j++;
 //            cornerID++;
         }

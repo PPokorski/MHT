@@ -19,10 +19,7 @@ typedef struct
     int maxGHypos ;
     int maxDepth ;
     double minGHypoRatio ;
-    double intensityThreshold;
-    double maxDistance1 ;
-    double maxDistance2 ;
-    double maxDistance3 ;
+    double maxDistance ;
 
     double pos2velLikelihood;
     double vel2curvLikelihood;

@@ -28,7 +28,7 @@
  *   The basic meanings of these three base classes are as follows:  *
  *                                                                   *
  *     REPORT subclasses contain descriptions of reported            *
- *       measurements (e.g. blips from radar, or edgels in an        *
+ *       measurements (e.g. blips from radar, or edges in an        *
  *       image).                                                     *
  *                                                                   *
  *     T_HYPO ("track hypothesis") subclasses are the nodes on the   *
@@ -38,7 +38,7 @@
  *       possibility that a given REPORT was a report of the present *
  *       target, and contain an estimate of the target's position.   *
  *       Another type might represent the possibility that the       *
- *       target dissappeared.  Etc.  A path through the track tree   *
+ *       target disappeared.  Etc.  A path through the track tree   *
  *       represents a sequence of events in the life of the target.  *
  *                                                                   *
  *     The MHT subclass (there's usually only one per program)       *
@@ -91,7 +91,7 @@
  *   "links to" member, whos copy constructor just generates an      *
  *   error.  Descendants of REPORT should have copy constructors     *
  *   which simply initialize their REPORT base with the default      *
- *   (no argument) constructer.  For example:                        *
+ *   (no argument) constructor.  For example:                        *
  *                                                                   *
  *      class FOO: public REPORT                                     *
  *      {                                                            *

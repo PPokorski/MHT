@@ -1,6 +1,6 @@
 /*********************************************************************
  *                                                                   *
- * FILE: motionModel.h                                               *
+ * FILE: motion_model.h                                              *
  *                                                                   *
  *                                                                   *
  * HISTORY:                                                          *
@@ -153,18 +153,15 @@ private:
     MATRIX m_z;                      // (x, dx, y, dy)
 
 public:
-    Texture_t m_textureInfo;
     int m_frameNo;
     size_t m_cornerID;
     CONSTPOS_REPORT( const double &falarmLogLikelihood,
                      const double &x, const double &y,
-                     const Texture_t &textureInfo,
                      const int &f, const size_t &cornerID):
         MDL_REPORT(),
         m_falarmLogLikelihood( falarmLogLikelihood ),
         m_z( 2, 1 ),
         m_frameNo(f),
-        m_textureInfo(textureInfo),
         m_cornerID(cornerID)
 
     {
@@ -176,7 +173,6 @@ public:
         m_falarmLogLikelihood( src.m_falarmLogLikelihood ),
         m_z( src.m_z ),
         m_frameNo(src.m_frameNo),
-	m_textureInfo(src.m_textureInfo),
         m_cornerID(src.m_cornerID)
     {
     }
@@ -272,8 +268,6 @@ private:
     MATRIX m_R;                      // measurement covariance
     MATRIX m_startP;                 // covariance matrix to use at
                                      //   start of a CORNER_TRACK
-    double m_intensityThreshold;
-
 public:
 
     CONSTVEL_MDL( double positionMeasureVarianceX,
@@ -285,7 +279,6 @@ public:
                   double lambda_x,
                   double detectProb,
                   double stateVar,
-                  double intThreshold,
                   double maxDistance);
 
     virtual int beginNewStates( MDL_STATE *mdlState,
@@ -302,9 +295,7 @@ public:
     }
     virtual double getStateX(MDL_STATE *s);
     virtual double getStateY(MDL_STATE *s);
-
-    double getCorr(CONSTVEL_STATE *s, CONSTPOS_REPORT *r);
-private:
+ private:
 
     CONSTVEL_STATE* getNextState( CONSTVEL_STATE *state,
                                   CONSTPOS_REPORT *report );
@@ -352,7 +343,6 @@ private:
     MATRIX *m_nextP;                 // updated state covariance
                                      //   (covariance for next state)
     MATRIX *m_x1;                    // state prediction
-    Texture_t m_prevTextureInfo;
 
 private:
 
@@ -361,7 +351,6 @@ private:
                     const double &dx,
                     const double &y,
                     const double &dy,
-                    const Texture_t &info,
                     MATRIX &P,
                     const double &logLikelihood,
                     const int &numSkipped):
@@ -375,8 +364,7 @@ private:
         m_x1( 0 ),
         m_nextP( 0 ),
         m_Sinv( 0 ),
-        m_W( 0 ),
-        m_prevTextureInfo(info)
+        m_W( 0 )
     {
         m_x(0)=x;
         m_x(1)=dx;
@@ -396,8 +384,7 @@ private:
         m_x1( 0 ),
         m_nextP( 0 ),
         m_Sinv( 0 ),
-        m_W( 0 ),
-        m_prevTextureInfo(src.m_prevTextureInfo)
+        m_W( 0 )
     {
     }
 

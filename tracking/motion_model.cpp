@@ -54,7 +54,7 @@
  *                                                                   *
  *********************************************************************/
 
-#include "motionModel.h"
+#include "motion_model.h"
 #include "param.h"
 #define NO_DEBUG1
 #define NO_DEBUG2
@@ -135,7 +135,6 @@ void CORNER_TRACK_MHT::measure(const std::list<CORNER> &newReports)
     {
         installReport(new CONSTPOS_REPORT(m_falarmLogLikelihood,
                                           cornerPtr->x, cornerPtr->y,
-                                          cornerPtr->m_textureInfo,
                                           cornerPtr->m_frameNo,cornerPtr->m_cornerID)
                      );
     }
@@ -369,7 +368,6 @@ CONSTVEL_STATE* CONSTVEL_MDL::getNextState( CONSTVEL_STATE *state,
                                         0.,
                                         y,
                                         0.,
-                                        report->m_textureInfo,
                                         m_startP,
                                         m_startLogLikelihood,
                                         0 );
@@ -391,7 +389,6 @@ CONSTVEL_STATE* CONSTVEL_MDL::getNextState( CONSTVEL_STATE *state,
                                         state->getDX1(),
                                         state->getY1(),
                                         state->getDY1(),
-                                        state->m_prevTextureInfo,
                                         state->getNextP(),
                                         0.,
                                         state->getNumSkipped() + 1 );
@@ -421,67 +418,17 @@ CONSTVEL_STATE* CONSTVEL_MDL::getNextState( CONSTVEL_STATE *state,
         }
         else
         {
-            int intValidated;
-            double intDistance =  getCorr(state, report);
-#ifdef SUM_SQUAREDIFF
-            intValidated = (intDistance < m_intensityThreshold);
-#endif
-#ifdef CORR_COEFF
-            intValidated = (intDistance > m_intensityThreshold);
-#endif
+            MATRIX new_m_x =  state->getPrediction() + state->getW() * v;
 
-            if (!intValidated)
-            {
-#ifdef DEBUG2
-                printf("\nPredicted State:\n");
-                (state->getPrediction()).print(2);
-                printf("\nValidating meas:\n");
-                (report->getZ()).print(3);
-                printf("\nInnovation:\n ");
-                v.print(4);
-                printf("\nSinv:\n");
-                (state->getSinv()).print(5);
-                printf("\nMahalinobus dist(innovTrans * s_inv * innov)=%lf maxDist=%lf\n",
-                       distance,m_maxDistance);
-                printf("intDist=%lf\n",intDistance);
-                printf("Prev Int = %f %f %f %f %f %f %f %f\n",
-                       state->m_prevTextureInfo[0],state->m_prevTextureInfo[1],
-                       state->m_prevTextureInfo[2],state->m_prevTextureInfo[3],
-                       state->m_prevTextureInfo[4],state->m_prevTextureInfo[5],
-                       state->m_prevTextureInfo[6],state->m_prevTextureInfo[7]);
-                printf("Current Int = %f %f %f %f %f %f %f %f\n",
-                       report->m_textureInfo[0],report->m_textureInfo[1],
-                       report->m_textureInfo[2],report->m_textureInfo[3],
-                       report->m_textureInfo[4],report->m_textureInfo[5],
-                       report->m_textureInfo[6],report->m_textureInfo[7]);
-#endif
-                nextState=0;
-            }
-            else
-            {
-                MATRIX new_m_x =  state->getPrediction() + state->getW() * v;
-
-#ifdef DEBUG1
-                printf("   Updated State:\n");
-                new_m_x.print();
-                printf("   State Likelihood=%lf\n",state->getLogLikelihoodCoef() -
-                       distance / 2 );
-
-
-#endif
-
-
-                nextState = new CONSTVEL_STATE( this,
-                                                new_m_x(0),
-                                                new_m_x(1),
-                                                new_m_x(2),
-                                                new_m_x(3),
-                                                report->m_textureInfo,
-                                                state->getNextP(),
-                                                state->getLogLikelihoodCoef() -
-                                                distance / 2,
-                                                0 );
-            }
+            nextState = new CONSTVEL_STATE( this,
+                                            new_m_x(0),
+                                            new_m_x(1),
+                                            new_m_x(2),
+                                            new_m_x(3),
+                                            state->getNextP(),
+                                            state->getLogLikelihoodCoef() -
+                                            distance / 2,
+                                            0 );
         }
     }
     return nextState;
@@ -523,7 +470,6 @@ CONSTVEL_MDL::CONSTVEL_MDL( double positionMeasureVarianceX,
                             double lambda_x,
                             double detectProb,
                             double stateVar,
-                            double intensityThreshold,
                             double maxDistance):
     CORNER_TRACK_MDL(),
     m_startLogLikelihood( log( startProb ) ),
@@ -533,7 +479,6 @@ CONSTVEL_MDL::CONSTVEL_MDL( double positionMeasureVarianceX,
     m_maxDistance( maxDistance ),
     m_processVariance( processVariance ),
     m_intensityVariance( intensityVariance ),
-    m_intensityThreshold( intensityThreshold ),
     m_stateVariance( stateVar ),
     m_R( 2, 2 ),
     m_startP( 4, 4 )
@@ -675,169 +620,3 @@ void CORNER_TRACK_MHT::describe(int spaces)
         (**(*tTreePtr).getTree()).describeTree( spaces + 2 );
     }
 }
-
-
-
-
-
-
-
-
-
-
-double CONSTVEL_MDL::getCorr(CONSTVEL_STATE *state, CONSTPOS_REPORT *report)
-{
-#ifdef DEBUG3
-    printf("State: %hd %hd %hd %hd %hd\n",state->m_prevTextureInfo[0],
-           state->m_prevTextureInfo[1],state->m_prevTextureInfo[2],
-           state->m_prevTextureInfo[3],state->m_prevTextureInfo[4]);
-    printf("Report: %hd %hd %hd %hd %hd\n",
-           report->m_textureInfo[0],report->m_textureInfo[1],
-           report->m_textureInfo[2],report->m_textureInfo[3],
-           report->m_textureInfo[4]);
-#endif
-
-    int width = 5;
-    int xm,ym;
-    int index;
-#ifdef SUM_SQUAREDIFF
-    double minDist = HUGE;
-    for (int p = 1 ; p<=3 ; p++)
-    {
-        ym=p;
-        for (int q = 1; q<=3 ; q++)
-        {
-            xm=q;
-            double dist = 0.0;
-            for (int j=-1; j<=1 ; j++)
-            {
-                int y = ym + j ;
-                int y1 = 2+j;  // pattern window is centered around middle
-                for (int i=-1; i<=1; i++)
-                {
-                    int x=xm + i ;
-                    int x1 = 2 + i;
-                    index = width * y + x;
-                    int index1 = width * y1 + x1;
-                    dist += (double)(state->m_prevTextureInfo[index1] - report->m_textureInfo[index]) *
-                            (double)(state->m_prevTextureInfo[index1] - report->m_textureInfo[index]);
-                }
-            }
-            dist = dist / m_intensityVariance;
-            if (dist < minDist)
-            {
-                minDist = dist;
-            }
-#ifdef DEBUG3
-            printf("Corr(%d %d)=%lf  ",ym,xm,dist);
-#endif
-        }
-    }
-
-    return minDist;
-#endif
-
-#ifdef CORR_COEFF
-
-    double stateMean, stateSigma;
-    double reportMean, reportSigma;
-
-    /* Precompute the previous Mean and sigma */
-    xm=ym=2;
-    stateMean=stateSigma=0.0;
-    int j = -1;
-    for (j=-1; j<=1 ; j++)
-    {
-        int y = ym + j ;
-        for (int i=-1; i<=1; i++)
-        {
-            int x=xm + i ;
-            index = width * y + x;
-            stateMean += (double)(state->m_prevTextureInfo[index]);
-            stateSigma += (double)(state->m_prevTextureInfo[index]) *( state->m_prevTextureInfo[index]);
-        }
-    }
-    stateMean /= 9;
-    stateSigma /= 9;
-    stateSigma = stateSigma -stateMean*stateMean;
-    stateSigma= sqrt(stateSigma);
-
-
-
-    /*
-     *Slide the pattern window i.e the 3x3 sub window of the 5x5 window of
-     * the previous state centered at the middle
-     */
-    double maxCorr = -HUGE;
-    for (int p = 1 ; p<=3 ; p++)
-    {
-        ym=p;
-        for (int q = 1; q<=3 ; q++)
-        {
-            xm=q;
-
-            /* Find the mean & sigma of the search window */
-            reportMean=reportSigma=0.0;
-            for (j=-1; j<=1 ; j++)
-            {
-                int y = ym + j ;
-                for (int i=-1; i<=1; i++)
-                {
-                    int x=xm + i ;
-                    index = width * y + x;
-                    reportMean += (double)(report->m_textureInfo[index]);
-                    reportSigma += (double)(report->m_textureInfo[index])*( report->m_textureInfo[index]);
-                }
-            }
-            reportMean /= 9.;
-            reportSigma /= 9.;
-            reportSigma = reportSigma -reportMean*reportMean;
-            reportSigma = sqrt(reportSigma);
-
-            /* Compute the max correlation coeff of the 3x3 window */
-            double corr = 0.0;
-            for (int j=-1; j<=1 ; j++)
-            {
-                int y = ym + j ;
-                int y1 = 2 + j;
-                for (int i=-1; i<=1; i++)
-                {
-                    int x=xm + i ;
-                    int x1 = 2 + i;
-                    index = width * y + x;
-                    int index1 = width *y1 + x1;
-                    corr += (double)(state->m_prevTextureInfo[index1] - stateMean) *
-                            (double)(report->m_textureInfo[index] - reportMean);
-                }
-            }
-
-            corr = corr != 0.0 || 
-                   reportSigma * stateSigma != 0.0 ? corr / (9.0 * reportSigma * stateSigma)
-                                                   : 1.0;
-
-            assert(corr >= -1.0 && corr <= 1.0);// {
-            //   fprintf(stderr, "Error in corr calculation\n");
-            //   exit(1);
-            // }
-            if (corr > maxCorr)
-            {
-                maxCorr = corr;
-            }
-
-#ifdef DEBUG3
-            printf("Corr(%d %d)=%lf  ",ym,xm,corr);
-#endif
-
-
-        }
-    }
-
-#ifdef DEBUG3
-    printf("MAXCorr=%lf  ",maxCorr);
-#endif
-    return maxCorr;
-#endif
-}
-
-
-

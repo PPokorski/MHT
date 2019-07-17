@@ -24,7 +24,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "/usr/people/4Dgifts/iristools/include/image.h"
+#include "image.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -286,7 +286,7 @@ void main(int argc, char **argv)
            if (displayOptions.cornerFrame) currentFrame=displayOptions.cornerFrame-start;
            else currentFrame=0;
            if (!(xi = XCreateImage(display,DefaultVisualOfScreen(screen),
-                            DefaultDepthOfScreen(screen),ZPixmap,0,data[currentFrame],width,height,32,width))) {
+                            DefaultDepthOfScreen(screen),ZPixmap,0,data[currentFrame],width,height,32,0))) {
                    fprintf(stderr,"Could not create Image\n");
                    exit(-1);
            }
@@ -1717,8 +1717,8 @@ static char *colorNames[12] =
         if (j==0)  contourList[i]->fno=fno;
         contourList[i]->array[j].fno=fno;
         contourList[i]->array[j].flag=flag;
-        contourList[i]->array[j].mx=(int)mx;
-        contourList[i]->array[j].my=(int)my;
+        contourList[i]->array[j].mx= isnan(mx) ? 0 : (int)mx;
+        contourList[i]->array[j].my= isnan(my) ? 0 : (int)my;
         contourList[i]->array[j].sx =(int)sx;
         contourList[i]->array[j].sy =(int)sy;
      }
