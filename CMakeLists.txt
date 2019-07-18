@@ -1,29 +1,32 @@
 cmake_minimum_required(VERSION 3.5)
-project(multi_hypothesis_tracker)
+project(mht)
 
 ## Build flags ##
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include_directories(mht)
-include_directories(tracking)
+#include_directories(mht/include)
 
 add_library(${PROJECT_NAME}
-        mht/apqueue.cpp
-        mht/assign.cpp
-        mht/bassign.cpp
-        mht/except.cpp
-        mht/links.cpp
-        mht/list.cpp
-        mht/matrix.cpp
-        mht/mdlmht.cpp
-        mht/mht.cpp
-        mht/mht_group.cpp
-        mht/mht_report.cpp
-        mht/mht_track.cpp
-        mht/pqueue.cpp
-        mht/tree.cpp)
+        mht/src/apqueue.cpp
+        mht/src/assign.cpp
+        mht/src/bassign.cpp
+        mht/src/except.cpp
+        mht/src/links.cpp
+        mht/src/list.cpp
+        mht/src/matrix.cpp
+        mht/src/mdlmht.cpp
+        mht/src/mht.cpp
+        mht/src/mht_group.cpp
+        mht/src/mht_report.cpp
+        mht/src/mht_track.cpp
+        mht/src/pqueue.cpp
+        mht/src/tree.cpp)
+
+target_include_directories(${PROJECT_NAME} PUBLIC mht/include)
+
+include_directories(tracking)
 
 add_executable(track_corners
         tracking/track_corners.cpp

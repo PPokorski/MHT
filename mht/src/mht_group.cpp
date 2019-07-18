@@ -41,9 +41,9 @@
 
 #include <stdlib.h>
 
-#include "mht.h"
-#include "apqueue.h"
-#include "pqueue.h"
+#include "mht/mht.h"
+#include "mht/apqueue.h"
+#include "mht/pqueue.h"
 
 /*-------------------------------------------------------------------*
  | g_apqueue -- assignment priority queue for generating new G_HYPOs

@@ -43,9 +43,9 @@
 
 #include <stdio.h>
 
-#include "mht.h"
+#include "mht/mht.h"
 #include <list>
-#include "corner.h"
+#include "mht/corner.h"
 
 /*-------------------------------------------------------------------*
  | MHT::scan() -- do an iteration of the mht algorithm

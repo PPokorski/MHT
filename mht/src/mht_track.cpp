@@ -1,18 +1,15 @@
 
 /*********************************************************************
- * FILE: pqueue.C                                                    *
+ * FILE: mht_track.C                                                 *
  *                                                                   *
  * AUTHOR: Matthew Miller (mlm)                                      *
  *                                                                   *
  * HISTORY:                                                          *
- *    2 JUN 93 -- (mlm) created                                      *
+ *   13 AUG 93 -- (mlm) commented                                    *
  *                                                                   *
  * CONTENTS:                                                         *
  *                                                                   *
- *   Out-of-line routines for PQUEUE_OF<> template, if they're not   *
- *   supposed to be in the header file (see portspecs.h).            *
- *                                                                   *
- *   See pqueue.H for details of the PQUEUE_OF<> template.           *
+ *   Member functions for T_TREE and T_HYPO objects.  See mht.H.     *
  *                                                                   *
  * ----------------------------------------------------------------- *
  *                                                                   *
@@ -42,11 +39,104 @@
  *                                                                   *
  *********************************************************************/
 
-#define DECLARE_PQUEUE
+#include "mht/mht.h"
 
-#include "pqueue.h"
+/*-------------------------------------------------------------------*
+ | T_HYPO::describe() -- diagnostic
+ *-------------------------------------------------------------------*/
 
-#if TMPLT_HANDLING == 1
-#include "pqueue.code"
-#endif
+void T_HYPO::describe( int spaces, int depth )
+{
+
+    PTR_INTO_LINKS_TO< G_HYPO > gHypoPtr;
+    int i, k;
+
+    Indent( spaces - 1);
+    for( i = 0; i < depth; i++ )
+    {
+        std::cout << " |";
+    }
+    std::cout << " **T_HYPO ";
+    print();
+    std::cout << std::endl;
+
+    Indent( spaces - 1 );
+    for( i = 0; i <= depth; i++ )
+    {
+        std::cout << " |";
+    }
+    std::cout << "   track = " << getTrackStamp();
+    std::cout << ", time = " << m_timeStamp;
+    std::cout << ", group id = " << getGroupId();
+    std::cout << std::endl;
+
+    Indent( spaces - 1 );
+    for( i = 0; i <= depth; i++ )
+    {
+        std::cout << " |";
+    }
+    if( m_reportLink.isEmpty() )
+    {
+        std::cout << "   NO REPORT";
+    }
+    else
+    {
+        std::cout << "   report = ";
+        (*m_reportLink).print();
+    }
+    std::cout << ", logLikelihood = " << m_logLikelihood;
+    if( ! m_mustVerify )
+    {
+        std::cout << ", NEED NOT VERIFY";
+    }
+    if( m_endsTrack )
+    {
+        std::cout << ", ENDS TRACK";
+    }
+    std::cout << std::endl;
+
+    Indent( spaces - 1 );
+    for( i = 0; i <= depth; i++ )
+    {
+        std::cout << " |";
+    }
+    std::cout << "   gHypo's:";
+    k = 0;
+
+    LOOP_LINKS( gHypoPtr, m_gHypoLinks )
+    {
+        if( k++ >= 3 )
+        {
+            std::cout << std::endl;
+            Indent( spaces - 1 );
+            for( i = 0; i <= depth; i++ )
+            {
+                std::cout << " |";
+            }
+            std::cout << "           ";
+            k = 0;
+        }
+
+        std::cout << " ";
+        (*gHypoPtr).print();
+    }
+    std::cout << std::endl;
+}
+
+/*-------------------------------------------------------------------*
+ | T_HYPO::describeTree() -- recursive diagnostic
+ *-------------------------------------------------------------------*/
+
+void T_HYPO::describeTree( int spaces, int depth )
+{
+
+    PTR_INTO_iTREE_OF< T_HYPO > childPtr;
+
+    describe( spaces, depth );
+
+    LOOP_TREEchildren( childPtr, this )
+    {
+        (*childPtr).describeTree( spaces, depth + 1 );
+    }
+}
 

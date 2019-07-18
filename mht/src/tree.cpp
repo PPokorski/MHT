@@ -41,7 +41,7 @@
 
 #define DECLARE_TREE
 
-#include "tree.h"
+#include "mht/tree.h"
 
 /*-------------------------------------------------------------------*
  | TREEnode::XgetFirstLeaf() -- get the first leaf descended from

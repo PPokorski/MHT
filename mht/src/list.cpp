@@ -41,7 +41,7 @@
 
 #define DECLARE_LIST
 
-#include "list.h"
+#include "mht/list.h"
 
 /*-------------------------------------------------------------------*
  | DLISTnode::XgetHead() -- find the head of a list

@@ -45,8 +45,8 @@
 #include <math.h>
 #include <iostream>
 
-#include "vector.h"
-#include "matrix.h"
+#include "mht/vector.h"
+#include "mht/matrix.h"
 
 /*-------------------------------------------------------------------*
  | Constants

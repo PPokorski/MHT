@@ -105,11 +105,11 @@
 #ifndef MOTION_MDL_H
 #define MOTION_MDL_H
 
-#include "except.h"
-#include "matrix.h"
-#include "mdlmht.h"
+#include "mht/except.h"
+#include "mht/matrix.h"
+#include "mht/mdlmht.h"
 #include "param.h"
-#include "corner.h"
+#include "mht/corner.h"
 #include <math.h>
 #include <cstdio>		// for  sprintf
 #include <list>			// for std::list<>

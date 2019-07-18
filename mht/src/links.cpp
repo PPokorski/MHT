@@ -39,7 +39,7 @@
  *                                                                   *
  *********************************************************************/
 
-#include "links.h"
+#include "mht/links.h"
 
 /*-------------------------------------------------------------------*
  | XMakeLinkBase() -- basic routine for making a link between two

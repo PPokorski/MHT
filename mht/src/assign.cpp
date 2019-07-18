@@ -136,8 +136,8 @@
 
 #include <stdlib.h>
 
-#include "queue.h"
-#include "assign.h"
+#include "mht/queue.h"
+#include "mht/assign.h"
 
 /*-------------------------------------------------------------------*
  | Constants

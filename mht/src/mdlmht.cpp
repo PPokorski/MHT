@@ -40,7 +40,7 @@
  *                                                                   *
  *********************************************************************/
 
-#include "mdlmht.h"
+#include "mht/mdlmht.h"
 
 /*-------------------------------------------------------------------*
  | MDL_MHT::measureAndValidate() -- collect reports of measurements

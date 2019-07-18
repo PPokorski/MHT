@@ -40,7 +40,7 @@
  *                                                                   *
  *********************************************************************/
 
-#include "bassign.h"
+#include "mht/bassign.h"
 
 static const int NO_SUCH_THING = 0x7FFFFFFF;
 static const int MAX_INTEGER = 0x7FFFFFFF;

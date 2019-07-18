@@ -44,7 +44,7 @@
 #include <iostream>
 #include <cstdio>		// for printf()
 
-#include "apqueue.h"
+#include "mht/apqueue.h"
 /*DBG BEGIN */
 #define FIELD_WIDTH 15
 static void printProblem( ROW_COL_COST *g_rcc, int g_numRCCs,
