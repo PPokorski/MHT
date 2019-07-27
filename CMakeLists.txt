@@ -6,9 +6,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-#include_directories(mht/include)
+include_directories(mht/include)
 
-add_library(${PROJECT_NAME}
+add_library(${PROJECT_NAME} SHARED
         mht/src/apqueue.cpp
         mht/src/assign.cpp
         mht/src/bassign.cpp
@@ -23,8 +23,6 @@ add_library(${PROJECT_NAME}
         mht/src/mht_track.cpp
         mht/src/pqueue.cpp
         mht/src/tree.cpp)
-
-target_include_directories(${PROJECT_NAME} PUBLIC mht/include)
 
 include_directories(tracking)
 
