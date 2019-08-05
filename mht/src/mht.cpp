@@ -56,10 +56,9 @@ int MHT::scan()
         return 0;
     }
 
-    const auto& newReports = m_reportsQueue.front();
+    measureAndValidate(m_reportsQueue.front());      
     m_reportsQueue.pop();
 
-    measureAndValidate(newReports);
     m_currentTime++;
 
     if( m_dbgStartA <= m_currentTime && m_currentTime < m_dbgEndA )
