@@ -456,9 +456,8 @@
 #include "tree.h"
 #include "links.h"
 #include "vector.h"
-#include <list>			// for std::list<>
-#include "corner.h"		// for CORNER, CORNERLIST
-#include <queue>		// for std::queue<>
+#include <list>
+#include <queue>
 
 
 #ifdef DECLARE_MHT
@@ -965,7 +964,7 @@ protected:
     int m_dbgStartA;
     iDLIST_OF< REPORT > m_newReportList;
     ptrDLIST_OF< T_HYPO > m_activeTHypoList;
-    std::queue<CORNERLIST> m_reportsQueue;
+    std::queue<std::list<REPORT*>> m_reportsQueue;
     bool m_isFirstScan;
 
 protected:
@@ -1016,7 +1015,7 @@ protected:
 
 protected:
 
-    virtual void measureAndValidate(const std::list<CORNER> &newReports)
+    virtual void measureAndValidate(const std::list<REPORT*>& newReports)
     {
         assert(false);
     }//THROW_ERR( "Call to MHT::measureAndValidate()" ) }
@@ -1032,7 +1031,7 @@ public:
         return m_currentTime;
     }
 
-    void addReports(const CORNERLIST &newReport);
+    void addReports(const std::list<REPORT*> &newReport);
     int scan();
     void clear();
 

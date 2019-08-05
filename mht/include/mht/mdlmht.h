@@ -400,7 +400,6 @@
 #define MDLMHT_H
 
 #include "mht.h"
-#include "corner.h"		// for CORNER class
 #include <list>			// for std::list<>
 
 /*-------------------------------------------------------------------*
@@ -550,8 +549,8 @@ public:
 
 protected:
 
-    virtual void measure(const std::list<CORNER> &newReports) {}
-    virtual void measureAndValidate(const std::list<CORNER> &newReports);
+    virtual void measure(const std::list<REPORT*> &newReports) {}
+    virtual void measureAndValidate(const std::list<REPORT*>& newReports);
 
     virtual void startTrack( int, int,
                              MDL_STATE *, MDL_REPORT * )

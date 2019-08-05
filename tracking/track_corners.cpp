@@ -242,7 +242,17 @@ int main(int argc, char **argv)
           cornerListIter != inputData.end();
           cornerListIter++ )
     {
-        mht.addReports(*cornerListIter);
+        std::list<REPORT*> reports;
+        for (const auto& corner : cornerListIter->list)
+        {
+          reports.emplace_back(new CONSTPOS_REPORT(std::log(param.meanFalarms),
+                                                   corner.x,
+                                                   corner.y,
+                                                   corner.m_frameNo,
+                                                   corner.m_cornerID));
+        }
+
+        mht.addReports(reports);
         didIscan = mht.scan();
         std::cout << "******************CURRENT_TIME=" << mht.getCurrentTime() << ' '
                   << "ENDTIME=" << param.endScan << "****************\n";

@@ -109,7 +109,7 @@
 #include "mht/matrix.h"
 #include "mht/mdlmht.h"
 #include "param.h"
-#include "mht/corner.h"
+#include "corner.h"
 #include <math.h>
 #include <cstdio>		// for  sprintf
 #include <list>			// for std::list<>
@@ -679,7 +679,7 @@ private:
 
 protected:
 
-    virtual void measure(const std::list<CORNER> &newReports);
+    virtual void measure(const std::list<REPORT*> &newReports);
 
     virtual void startTrack( int trackId, int,
                              MDL_STATE *state, MDL_REPORT *report )

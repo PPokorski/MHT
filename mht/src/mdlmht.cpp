@@ -47,7 +47,7 @@
  |                                  and grow track trees
  *-------------------------------------------------------------------*/
 
-void MDL_MHT::measureAndValidate(const std::list< CORNER > &newReports)
+void MDL_MHT::measureAndValidate(const std::list<REPORT*>& newReports)
 {
 
 

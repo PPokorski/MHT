@@ -127,16 +127,11 @@ void CORNER_TRACK_MHT::verify( int trackId, double r_x, double r_y, double s_x, 
  * them as reports
  *-------------------------------------------------------------------*/
 
-void CORNER_TRACK_MHT::measure(const std::list<CORNER> &newReports)
+void CORNER_TRACK_MHT::measure(const std::list<REPORT*> &newReports)
 {
-    for (std::list<CORNER>::const_iterator cornerPtr = newReports.begin();
-         cornerPtr != newReports.end();
-         cornerPtr++)
+    for (auto report_ptr : newReports)
     {
-        installReport(new CONSTPOS_REPORT(m_falarmLogLikelihood,
-                                          cornerPtr->x, cornerPtr->y,
-                                          cornerPtr->m_frameNo,cornerPtr->m_cornerID)
-                     );
+        installReport(report_ptr);
     }
 
 }

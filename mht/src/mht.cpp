@@ -45,7 +45,6 @@
 
 #include "mht/mht.h"
 #include <list>
-#include "mht/corner.h"
 
 /*-------------------------------------------------------------------*
  | MHT::scan() -- do an iteration of the mht algorithm
@@ -57,10 +56,10 @@ int MHT::scan()
         return 0;
     }
 
-    const CORNERLIST newReports = m_reportsQueue.front();
+    const auto& newReports = m_reportsQueue.front();
     m_reportsQueue.pop();
 
-    measureAndValidate(newReports.list);
+    measureAndValidate(newReports);
     m_currentTime++;
 
     if( m_dbgStartA <= m_currentTime && m_currentTime < m_dbgEndA )
@@ -116,7 +115,7 @@ int MHT::scan()
  |     as they become available and call scan on a regular interval,
  |     or some other real-time processing paradigm.
  *-------------------------------------------------------------------*/
-void MHT::addReports(const CORNERLIST &newReports)
+void MHT::addReports(const std::list<REPORT*> &newReports)
 {
     m_reportsQueue.push(newReports);
 }
